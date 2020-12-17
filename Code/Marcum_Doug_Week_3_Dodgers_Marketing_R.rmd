@@ -1,0 +1,85 @@
+---
+title: "Marcum_Doug_Week_3_Dodgers_Marketing_R"
+author: "Doug Marcum"
+date: "9/16/2020"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# load libraries that may be needed
+library(readr)
+library(dplyr)
+library(corrplot)
+library(ggplot2)
+library(skimr)
+library(reshape2)
+```
+Load Data
+```{r}
+# load csv file dodgers_num.csv
+dodger <- read.csv('dodgers_num.csv')
+
+# inspect data
+head(dodger)
+str(dodger)
+
+# Here the data is skimmed to take a overarching evaluation of it. No data is missing and the distributions are as expected for the subject matter.
+skim(dodger)
+```
+Plot Correlation  
+*While correlation was viewed in Python, will be observed here for practice*
+```{r}
+corrplot(cor(dodger), method = 'square')
+
+# look at correlation values with attendance
+Attendcorrs <- cor(dodger$attend, dodger)
+Attendcorrs
+```
+Regression - The linear regression model is built and processed.
+```{r}
+mod_1 <- lm(attend ~ month + day_of_week + bobblehead, data = dodger)
+summary(mod_1)
+```
+```{r}
+par(mfrow=c(2,2))
+plot(mod_1)
+par(mfrow=c(1,1))
+```
+Create the training (development) and test (validation) data samples from original data.
+```{r}
+# set random seed
+set.seed(56)
+
+# split the data, set up train and test subsets (75/25 split)
+training_indices <- sample(1:nrow(dodger), round(nrow(dodger)*0.75))
+train <- dodger[training_indices, ]
+test <- dodger[-training_indices, ]
+
+# test the data through the model
+lmMod <- lm(attend ~ month + day_of_week + bobblehead, data = train)
+pred <- predict(lmMod, test)
+
+summary(lmMod)
+```
+Calculate prediction
+```{r}
+actuals_preds <- data.frame(cbind(actual = test$attend, predicted = pred))
+head(actuals_preds)
+```
+Visualize Prediction Data
+```{r}
+# new dataframe
+new_test <- test
+new_test['predicted'] <- actuals_preds$predicted
+melted_df <- melt(data = new_test, id.vars = c("month", "day_of_week"), measure.vars = c("attend", "predicted"))
+
+# visualize actual vs predicted data
+prediction_plot <- ggplot(melted_df, aes(x = day_of_week, y = value, color=variable)) + 
+  geom_point()
+
+prediction_plot + facet_grid(~month) + 
+  xlab('Days of the Week') + 
+  ylab('Attendance') + 
+  ggtitle('Attendance Prediction By Months')
+```
