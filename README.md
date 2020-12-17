@@ -10,4 +10,4 @@ Note From Professor - *It is up to you if you decide to recommend a specific dat
 Python used for EDA and data cleaning.  
 R used for modeling and analysis.
 
-Recommendation report can be found here.
+Recommendation report can be found [here](https://github.com/MarcumDoug/Case_Study_Marketing_Promotion/blob/main/Report/Marcum_Doug_Dodgers_Marketing_Recommendation.pdf).
