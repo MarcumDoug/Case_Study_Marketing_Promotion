@@ -1,5 +1,4 @@
-# Case_Study_Marketing_Promotion
-Case Study for DSC 630 - Dodgers Marketing Promotion to Increase Attendance
+# Case_Study_Marketing_Promotion  
 
 ## Overview
 Using the Dodgers Major League Baseball data from 2012, dodgers.csv, determine what night would be the best to run a marketing promotion to increase attendance.  
